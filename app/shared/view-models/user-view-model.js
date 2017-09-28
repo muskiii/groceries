@@ -1,6 +1,7 @@
 var config = require("../../shared/config");
 var fetchModule = require("fetch");
 var observableModule = require("data/observable");
+var validator = require("email-validator");
 
 function User(info) {
     info = info || {};
@@ -12,7 +13,7 @@ function User(info) {
     });
 
     viewModel.login = function() {
-        return fetchModule.fetch(config.apiUrl + "oauth/token", {
+        return fetchModule.fetch(config.loginAPIUrl + "oauth/token", {
             method: "POST",
             body: JSON.stringify({
                 username: viewModel.get("email"),
@@ -33,7 +34,7 @@ function User(info) {
     };
 
     viewModel.register = function() {
-        return fetchModule.fetch(config.apiUrl + "Users", {
+        return fetchModule.fetch(config.loginAPIUrl + "Users", {
             method: "POST",
             body: JSON.stringify({
                 Username: viewModel.get("email"),
@@ -45,7 +46,10 @@ function User(info) {
             }
         }).then(handleErrors);
     };
-
+    viewModel.isValidEmail = function() {
+        var email = this.get("email");
+        return validator.validate(email);
+    };
     return viewModel;
 }
 
